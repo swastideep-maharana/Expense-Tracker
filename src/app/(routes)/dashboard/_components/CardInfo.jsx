@@ -89,10 +89,24 @@ function CardInfo({ budgetList, incomeList }) {
           <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
+                <h2 className="text-sm">Total Spend</h2>
+                <h2 className="font-bold text-2xl">
+                  ${formatNumber(totalSpend)}
+                </h2>
+              </div>
+              <ReceiptText
+                PiggyBank
+                className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white"
+              />
+            </div>
+          </div>
+          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="p-7 border rounded-2xl flex items-center justify-between">
+              <div>
                 <h2 className="text-sm">No. of Budget</h2>
                 <h2 className="font-bold text-2xl">${budgetList.length}</h2>
               </div>
-              <PiggyBank className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
+              <Wallet className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
             </div>
           </div>
           <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -103,7 +117,7 @@ function CardInfo({ budgetList, incomeList }) {
                   ${formatNumber(totalIncome)}
                 </h2>
               </div>
-              <PiggyBank className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
+              <CircleDollarSign className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
             </div>
           </div>
         </div>
@@ -113,3 +127,5 @@ function CardInfo({ budgetList, incomeList }) {
     </div>
   );
 }
+
+export default CardInfo;
