@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import { eq } from "drizzle-orm";
 import { useRouter } from "next/navigation";
 
+
 function DashboardLayout({ children }) {
   const { user } = useUser();
   const router = useRouter();
@@ -30,7 +31,7 @@ function DashboardLayout({ children }) {
   return (
     <div>
       <div className="fixed md:w-64 hidden md:block">
-        <SideNav />
+        <SideNav/>
       </div>
       <div className="md:ml-64">
         <DashboardHeader />
@@ -39,3 +40,5 @@ function DashboardLayout({ children }) {
     </div>
   );
 }
+
+export default DashboardLayout;

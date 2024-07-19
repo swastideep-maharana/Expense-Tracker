@@ -13,7 +13,7 @@ import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-function SideNav() {
+export default function SideNav() {
   const menuList = [
     {
       id: 1,
