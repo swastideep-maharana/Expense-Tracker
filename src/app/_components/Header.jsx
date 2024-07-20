@@ -1,13 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { db } from "../../../utlis/dbConfig";
 import { useUser, UserButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const { user, isSignedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, router]);
+
   return (
     <div className="p-5 flex justify-between items-center border shadow-sm">
       <div className="flex flex-row items-center">
@@ -22,13 +32,14 @@ function Header() {
       {isSignedIn ? (
         <UserButton />
       ) : (
-        <div className="flex gap-3  items-center">
-          <Link href={"/dashboard"}>
+        <div className="flex gap-3 items-center">
+          <Link href={isSignedIn ? "/dashbord" : "/sign-in"}>
             <Button variant="outline" className="rounded-full">
               Dashboard
             </Button>
           </Link>
-          <Link href={"/sign-in"}>
+
+          <Link href="/sign-in">
             <Button className="rounded-full">Get Started</Button>
           </Link>
         </div>

@@ -8,12 +8,13 @@ import {
 
 import React, { useEffect, useState } from "react";
 import formatNumber from "../../../../../utlis";
+import getFinancialAdvice from "../../../../../utlis/getFinancialAdvice";
 
 function CardInfo({ budgetList, incomeList }) {
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpend, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
-  const [financialAdvice, setFinanacialAdvice] = useState("");
+  const [financialAdvice, setFinancialAdvice] = useState("");
 
   useEffect(() => {
     if (budgetList.length > 0 || incomeList.length > 0) {
@@ -22,30 +23,32 @@ function CardInfo({ budgetList, incomeList }) {
   }, [budgetList, incomeList]);
 
   useEffect(() => {
-    // if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
-    //   const fetchFinanacialAdvice = async () => {
-    //     const advice = await getFinacialAdvice(
-    //       totalBudget,
-    //       totalIncome,
-    //       totalSpend
-    //     );
-    //   };
-    //   setFinanacialAdvice(advice)
-    // }
-    // fetchFinanacialAdvice();
+    const fetchFinancialAdvice = async () => {
+      if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
+        const advice = await getFinancialAdvice(
+          totalBudget,
+          totalIncome,
+          totalSpend
+        );
+        setFinancialAdvice(advice);
+      }
+    };
+
+    fetchFinancialAdvice();
   }, [totalBudget, totalIncome, totalSpend]);
+
   const CalculateCardInfo = () => {
     let totalBudget_ = 0;
     let totalSpend_ = 0;
     let totalIncome_ = 0;
 
     budgetList.forEach((element) => {
-      totalBudget_ = totalBudget_ + Number(element.amount);
-      totalSpend_ = totalSpend_ + element.totalSpend;
+      totalBudget_ += Number(element.amount);
+      totalSpend_ += element.totalSpend;
     });
 
     incomeList.forEach((element) => {
-      totalIncome_ = totalIncome_ + element.totalAmount;
+      totalIncome_ += element.totalAmount;
     });
 
     setTotalBudget(totalBudget_);
@@ -60,7 +63,7 @@ function CardInfo({ budgetList, incomeList }) {
           <div className="p-7 border mt-4 rounded-2xl flex items-center justify-between">
             <div className="">
               <div className="flex mb-2 flex-row space-x-1 items-center">
-                <h2>Finnce Smart AI</h2>
+                <h2>Finance Smart AI</h2>
                 <Sparkles
                   className="rounded-full text-white w-10 h-10 p-2
                 bg-gradient-to-r
@@ -72,7 +75,7 @@ function CardInfo({ budgetList, incomeList }) {
                 />
               </div>
               <h2 className="font-light text-md">
-                {financialAdvice || "loading financial advice..."}
+                {financialAdvice || "Loading financial advice..."}
               </h2>
             </div>
           </div>
@@ -81,12 +84,12 @@ function CardInfo({ budgetList, incomeList }) {
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">Total Budget</h2>
-                <h2 className="font-bold text-2xl">${formatNumber}</h2>
+                <h2 className="font-bold text-2xl">
+                  ${formatNumber(totalBudget)}
+                </h2>
               </div>
               <PiggyBank className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
             </div>
-          </div>
-          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">Total Spend</h2>
@@ -94,13 +97,8 @@ function CardInfo({ budgetList, incomeList }) {
                   ${formatNumber(totalSpend)}
                 </h2>
               </div>
-              <ReceiptText
-                PiggyBank
-                className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white"
-              />
+              <ReceiptText className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
             </div>
-          </div>
-          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
                 <h2 className="text-sm">No. of Budget</h2>
@@ -108,11 +106,9 @@ function CardInfo({ budgetList, incomeList }) {
               </div>
               <Wallet className="bg-blue-800 p-3 h-1 w-1 rounded-full text-white" />
             </div>
-          </div>
-          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div className="p-7 border rounded-2xl flex items-center justify-between">
               <div>
-                <h2 className="text-sm">sum of Income Streams</h2>
+                <h2 className="text-sm">Sum of Income Streams</h2>
                 <h2 className="font-bold text-2xl">
                   ${formatNumber(totalIncome)}
                 </h2>

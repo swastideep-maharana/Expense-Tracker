@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import Image from "next/image";
+
+
 
 import {
   LayoutGrid,
@@ -59,7 +60,7 @@ export default function SideNav() {
   return (
     <div className="h-screen p-5 border shadow-sm">
       <div className="flex flex-row items-center">
-        <Image src={"./chart-donut.svg"} alt="logo/" width={40} height={25} />
+        <img src={"/chart-donut.svg"} alt="logo/" width={40} height={25} />
         <span className="text-blue-800 font-bold text-xl">FinanceSmart</span>
       </div>
 

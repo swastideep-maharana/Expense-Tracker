@@ -1,19 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { db } from "../../../../utlis/dbConfig";
 import CardInfo from "./_components/CardInfo";
-import { desc, eq, getTableColumns, sql  } from "drizzle-orm";
-import {Budgets, Expenses, Incomes } from "../../../../utlis/schema";
+import { desc, eq, getTableColumns, sql } from "drizzle-orm";
+import { Budgets, Expenses, Incomes } from "../../../../utlis/schema";
 import BarChartDashboard from "./_components/BarChartDashboard";
 import BudgetItem from "./budgets/_components/BudgetItem";
-import ExpenseListTable from '../dashboard/expenses/_components/ExpenseListTable'
+import ExpenseListTable from "../dashboard/expenses/_components/ExpenseListTable";
 
 function Dashboard() {
   const { user } = useUser();
 
   const [budgetList, setBudgetList] = useState([]);
   const [incomeList, setIncomeList] = useState([]);
-  const [expenseList, setExpenseList] = useState([]);
+  const [expenseList, setExpensesList] = useState([]);
 
   useEffect(() => {
     user && getBudgetList();
@@ -69,7 +70,7 @@ function Dashboard() {
       console.error("Error fetching income list:", error);
     }
   };
-
+  console.log(expenseList);
   return (
     <div className="p-8 ">
       <h2 className="font-bold text-4xl">Hi, {user?.fullName}</h2>
@@ -83,14 +84,14 @@ function Dashboard() {
           <BarChartDashboard budgetList={budgetList} />
 
           <ExpenseListTable
-            expenseList={expenseList}
+            expensesList={expenseList}
             refreshData={() => getBudgetList()}
           />
         </div>
 
         <div className="grid gap-5">
-            <h2 className="font-bold text-lg">Latest Budgets</h2>
-            {budgetList?.length > 0
+          <h2 className="font-bold text-lg">Latest Budgets</h2>
+          {budgetList?.length > 0
             ? budgetList.map((budget, index) => (
                 <BudgetItem budget={budget} key={index} />
               ))
