@@ -2,8 +2,8 @@ import {
   PiggyBank,
   ReceiptText,
   Wallet,
-  Sparkles,
   CircleDollarSign,
+  Sparkles,
 } from "lucide-react";
 
 import React, { useEffect, useState } from "react";
@@ -63,18 +63,17 @@ function CardInfo({ budgetList, incomeList }) {
           <div className="p-7 border mt-4 rounded-2xl flex items-center justify-between">
             <div className="">
               <div className="flex mb-2 flex-row space-x-1 items-center">
-                <h2>Finance Smart AI</h2>
+                <h2 className="font-bold">Finance Smart AI</h2>
                 <Sparkles
                   className="rounded-full text-white w-10 h-10 p-2
-                bg-gradient-to-r
-                from-pink-500
-                via-red-500
-                to-yellow-500
-                background-animate
-                "
+    bg-gradient-to-r
+    from-pink-500
+    via-red-500
+    to-yellow-500
+    background-animate"
                 />
               </div>
-              <h2 className="font-light text-md">
+              <h2 className="font-semibold text-md">
                 {financialAdvice || "Loading financial advice..."}
               </h2>
             </div>

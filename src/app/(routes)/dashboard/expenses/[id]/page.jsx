@@ -84,7 +84,7 @@ function ExpensesScreen({ params }) {
     toast("Budget Deleted !");
     route.replace("/dashboard/budgets");
   };
-  console.log(expenseList);
+  console.log(expensesList);
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold gap-2 flex justify-between items-center">
@@ -143,7 +143,7 @@ function ExpensesScreen({ params }) {
       </div>
       <div className="mt-4">
         <ExpenseListTable
-          expenseList={expensesList}
+          expensesList={expensesList}
           refreshData={() => getBudgetInfo()}
         />
       </div>
