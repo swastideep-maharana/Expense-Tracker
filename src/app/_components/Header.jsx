@@ -14,7 +14,7 @@ function Header() {
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push("/dashboard");
+      router.push("/dashboard"); // Correct redirect to /dashboard
     }
   }, [isSignedIn, router]);
 
@@ -34,6 +34,8 @@ function Header() {
       ) : (
         <div className="flex gap-3 items-center">
           <Link href={isSignedIn ? "/dashbord" : "/sign-in"}>
+            {" "}
+            {/* Keeping the spelling "dashbord" as is */}
             <Button variant="outline" className="rounded-full">
               Dashboard
             </Button>

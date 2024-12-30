@@ -8,7 +8,7 @@ import BudgetItem from "../../budgets/_components/BudgetItem";
 import AddExpense from "../_components/AddExpense";
 import ExpenseListTable from "../_components/ExpenseListTable";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Pen, PenBox, Trash } from "lucide-react";
+import { ArrowLeft, Trash } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,11 +26,14 @@ import EditBudget from "../_components/EditBudget";
 
 function ExpensesScreen({ params }) {
   const { user } = useUser();
-  const [budgetInfo, setbudgetInfo] = useState();
+  const [budgetInfo, setbudgetInfo] = useState(null);
   const [expensesList, setExpensesList] = useState([]);
   const route = useRouter();
+
   useEffect(() => {
-    user && getBudgetInfo();
+    if (user) {
+      getBudgetInfo();
+    }
   }, [user]);
 
   /**
@@ -49,7 +52,11 @@ function ExpensesScreen({ params }) {
       .where(eq(Budgets.id, params.id))
       .groupBy(Budgets.id);
 
-    setbudgetInfo(result[0]);
+    if (result.length > 0) {
+      setbudgetInfo(result[0]);
+    } else {
+      setbudgetInfo(null);
+    }
     getExpensesList();
   };
 
@@ -62,29 +69,31 @@ function ExpensesScreen({ params }) {
       .from(Expenses)
       .where(eq(Expenses.budgetId, params.id))
       .orderBy(desc(Expenses.id));
+
     setExpensesList(result ?? []);
-    console.log(result);
   };
 
   /**
    * Used to Delete budget
    */
   const deleteBudget = async () => {
-    const deleteExpenseResult = await db
-      .delete(Expenses)
-      .where(eq(Expenses.budgetId, params.id))
-      .returning();
-
-    if (deleteExpenseResult) {
-      const result = await db
-        .delete(Budgets)
-        .where(eq(Budgets.id, params.id))
+    try {
+      const deleteExpenseResult = await db
+        .delete(Expenses)
+        .where(eq(Expenses.budgetId, params.id))
         .returning();
+
+      if (deleteExpenseResult) {
+        await db.delete(Budgets).where(eq(Budgets.id, params.id)).returning();
+        toast("Budget Deleted!");
+        route.replace("/dashboard/budgets");
+      }
+    } catch (error) {
+      toast.error("Error deleting the budget.");
+      console.error(error);
     }
-    toast("Budget Deleted !");
-    route.replace("/dashboard/budgets");
   };
-  console.log(expensesList);
+
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold gap-2 flex justify-between items-center">
@@ -97,7 +106,6 @@ function ExpensesScreen({ params }) {
             budgetInfo={budgetInfo}
             refreshData={() => getBudgetInfo()}
           />
-
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="flex gap-2 rounded-full" variant="destructive">
@@ -115,7 +123,7 @@ function ExpensesScreen({ params }) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => deleteBudget()}>
+                <AlertDialogAction onClick={deleteBudget}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -123,17 +131,11 @@ function ExpensesScreen({ params }) {
           </AlertDialog>
         </div>
       </h2>
-      <div
-        className="grid grid-cols-1 
-        md:grid-cols-2 mt-6 gap-5"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-5">
         {budgetInfo ? (
           <BudgetItem budget={budgetInfo} />
         ) : (
-          <div
-            className="h-[150px] w-full bg-slate-200 
-            rounded-lg animate-pulse"
-          ></div>
+          <div className="h-[150px] w-full bg-slate-200 rounded-lg animate-pulse"></div>
         )}
         <AddExpense
           budgetId={params.id}
