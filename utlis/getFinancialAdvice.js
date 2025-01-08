@@ -26,7 +26,10 @@ const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
     // Use the appropriate method from the library
     const result = await model.generateContent({ prompt });
 
-    // Ensure the result contains valid candidates
+    // Log the entire result object to inspect its structure
+    console.log("Result from AI model:", result);
+
+    // Ensure the result contains valid candidates and is iterable
     if (
       result &&
       Array.isArray(result.candidates) &&
