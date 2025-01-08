@@ -1,55 +1,74 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import CreateBudget from "./CreateBudget";
-import { db } from "../../../../../../utlis/dbConfig";
-import { desc, eq, getTableColumns, sql } from "drizzle-orm";
-import { Budgets, Expenses } from "../../../../../../utlis/schema";
-import { useUser } from "@clerk/nextjs";
-import BudgetItem from "./BudgetItem";
+import React, { useState, useEffect } from "react";
 
-function BudgetList() {
+const BudgetList = () => {
+  // State to hold the budget list data
   const [budgetList, setBudgetList] = useState([]);
-  const { user } = useUser();
+  const [loading, setLoading] = useState(true); // To track loading state
+  const [error, setError] = useState(null); // To track errors
 
-  useEffect(() => {
-    user && getBudgetList();
-  }, [user]);
-
-  /**
-   * used to get budget List
-   */
+  // Function to fetch the budget list from the API
   const getBudgetList = async () => {
-    const result = await  db
-      .select({
-        ...getTableColumns(Budgets),
-        totalSpend: sql`sum(${Expenses.amount})`.mapWith(Number),
-        totalItem: sql`count(${Expenses.id})`.mapWith(Number),
-      })
-      .from(Budgets)
-      .leftJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
-      .where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress))
-      .groupBy(Budgets.id)
-      .orderBy(desc(Budgets.id));
-    setBudgetList(result);
+    try {
+      // Set loading to true before making the request
+      setLoading(true);
+
+      // Make API request
+      const response = await fetch("/api/your-endpoint"); // Replace with your actual API URL
+
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      // Parse the JSON response
+      const data = await response.json();
+
+      // Log the data for debugging
+      console.log("Data from API:", data);
+
+      // Set the fetched data to state
+      setBudgetList(data);
+    } catch (error) {
+      // Set error state if there's an issue
+      setError(error.message);
+    } finally {
+      // Set loading to false after the request is done
+      setLoading(false);
+    }
   };
 
+  // Fetch data on component mount
+  useEffect(() => {
+    getBudgetList();
+  }, []);
+
+  // Render the UI
   return (
-    <div className="mt-7">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <CreateBudget refreshData={() => getBudgetList()} />
-        {budgetList?.length > 0
-          ? budgetList.map((budget, index) => (
-              <BudgetItem budget={budget} key={index} />
+    <div>
+      <h1>Budget List</h1>
+
+      {/* Show loading spinner or message */}
+      {loading && <p>Loading...</p>}
+
+      {/* Show error message if there's an error */}
+      {error && <p>Error: {error}</p>}
+
+      {/* Render the budget list */}
+      {!loading && !error && (
+        <ul>
+          {budgetList.length > 0 ? (
+            budgetList.map((item) => (
+              <li key={item.id}>
+                {item.name}: {item.amount}
+              </li>
             ))
-          : [1, 2, 3, 4, 5].map((item, index) => (
-              <div
-                key={index}
-                className="w-full bg-slate-200 rounded-lg h-[150px] animate-pulse"
-              ></div>
-            ))}
-      </div>
+          ) : (
+            <p>No data available</p>
+          )}
+        </ul>
+      )}
     </div>
   );
-}
+};
 
 export default BudgetList;
