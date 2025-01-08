@@ -31,17 +31,19 @@ const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
     // Log the result to inspect its structure
     console.log("Result from AI model:", result);
 
-    // Ensure the result contains valid candidates and is iterable
-    if (
-      result &&
-      Array.isArray(result.candidates) &&
-      result.candidates.length > 0
-    ) {
-      const responseText = result.candidates[0].content;
-      console.log("Generated Advice:", responseText);
-      return responseText;
+    // Check if the result contains a valid candidates array
+    if (result && Array.isArray(result.candidates)) {
+      if (result.candidates.length > 0) {
+        const responseText = result.candidates[0].content;
+        console.log("Generated Advice:", responseText);
+        return responseText;
+      } else {
+        throw new Error("No candidates found in the response.");
+      }
     } else {
-      throw new Error("No valid response received from the AI model.");
+      throw new Error(
+        "Invalid response structure: candidates array is missing or not iterable."
+      );
     }
   } catch (error) {
     console.error("Error fetching financial advice:", error.message);
