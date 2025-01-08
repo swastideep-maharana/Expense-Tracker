@@ -13,8 +13,10 @@ const genAI = new GoogleGenerativeAI({ apiKey });
 // Use the correct method to initialize the model
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+// Function to generate personalized financial advice
 const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
   try {
+    // Create the prompt with the user's financial data
     const prompt = `
       Based on the following financial data:
       - Total Budget: ${totalBudget} USD
@@ -26,7 +28,7 @@ const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
     // Use the appropriate method from the library
     const result = await model.generateContent({ prompt });
 
-    // Log the entire result object to inspect its structure
+    // Log the result to inspect its structure
     console.log("Result from AI model:", result);
 
     // Ensure the result contains valid candidates and is iterable

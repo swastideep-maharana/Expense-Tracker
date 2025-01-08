@@ -18,26 +18,31 @@ function CardInfo({ budgetList, incomeList }) {
 
   useEffect(() => {
     if (budgetList.length > 0 || incomeList.length > 0) {
-      CalculateCardInfo();
+      calculateCardInfo();
     }
   }, [budgetList, incomeList]);
 
   useEffect(() => {
     const fetchFinancialAdvice = async () => {
       if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
-        const advice = await getFinancialAdvice(
-          totalBudget,
-          totalIncome,
-          totalSpend
-        );
-        setFinancialAdvice(advice);
+        try {
+          const advice = await getFinancialAdvice(
+            totalBudget,
+            totalIncome,
+            totalSpend
+          );
+          setFinancialAdvice(advice);
+        } catch (error) {
+          console.error("Error fetching financial advice:", error);
+          setFinancialAdvice("Unable to fetch advice at the moment.");
+        }
       }
     };
 
     fetchFinancialAdvice();
   }, [totalBudget, totalIncome, totalSpend]);
 
-  const CalculateCardInfo = () => {
+  const calculateCardInfo = () => {
     let totalBudget_ = 0;
     let totalSpend_ = 0;
     let totalIncome_ = 0;
@@ -58,7 +63,7 @@ function CardInfo({ budgetList, incomeList }) {
 
   return (
     <div>
-      {budgetList.length > 0 ? (
+      {budgetList.length > 0 || incomeList.length > 0 ? (
         <div>
           <div className="p-7 border mt-4 rounded-2xl flex items-center justify-between">
             <div className="">
@@ -66,11 +71,11 @@ function CardInfo({ budgetList, incomeList }) {
                 <h2 className="font-bold">Finance Smart AI</h2>
                 <Sparkles
                   className="rounded-full text-white w-10 h-10 p-2
-    bg-gradient-to-r
-    from-pink-500
-    via-red-500
-    to-yellow-500
-    background-animate"
+                  bg-gradient-to-r
+                  from-pink-500
+                  via-red-500
+                  to-yellow-500
+                  background-animate"
                 />
               </div>
               <h2 className="font-semibold text-md">
@@ -117,7 +122,9 @@ function CardInfo({ budgetList, incomeList }) {
           </div>
         </div>
       ) : (
-        <></>
+        <div className="text-center text-lg text-gray-500">
+          No financial data available
+        </div>
       )}
     </div>
   );
