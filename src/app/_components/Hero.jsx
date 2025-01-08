@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
@@ -31,4 +33,5 @@ function Hero() {
     </section>
   );
 }
+
 export default Hero;

@@ -1,4 +1,5 @@
 "use client";
+
 import { db } from "../../../../../utlis/dbConfig";
 import { Budgets, Expenses } from "../../../../../utlis/schema";
 import { desc, eq } from "drizzle-orm";
@@ -12,14 +13,10 @@ function ExpensesScreen() {
 
   useEffect(() => {
     if (user) {
-      console.log("User loaded:", user);
       getAllExpenses();
     }
   }, [user]);
 
-  /**
-   * Used to get All expenses belonging to users
-   */
   const getAllExpenses = async () => {
     try {
       const result = await db
@@ -34,7 +31,6 @@ function ExpensesScreen() {
         .where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress))
         .orderBy(desc(Expenses.id));
 
-      console.log("Expenses result:", result);
       setExpensesList(result);
     } catch (error) {
       console.error("Error fetching expenses:", error);

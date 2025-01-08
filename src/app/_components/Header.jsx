@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { db } from "../../../utlis/dbConfig";
 import { useUser, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +13,7 @@ function Header() {
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push("/dashboard"); // Correct redirect to /dashboard
+      router.push("/dashboard"); // Redirect to /dashboard
     }
   }, [isSignedIn, router]);
 
@@ -33,9 +32,7 @@ function Header() {
         <UserButton />
       ) : (
         <div className="flex gap-3 items-center">
-          <Link href={isSignedIn ? "/dashbord" : "/sign-in"}>
-            {" "}
-            {/* Keeping the spelling "dashbord" as is */}
+          <Link href="/dashboard">
             <Button variant="outline" className="rounded-full">
               Dashboard
             </Button>
