@@ -26,12 +26,17 @@ const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
     // Use the appropriate method from the library
     const result = await model.generateContent({ prompt });
 
-    if (result && result.candidates && result.candidates.length > 0) {
+    // Ensure the result contains valid candidates
+    if (
+      result &&
+      Array.isArray(result.candidates) &&
+      result.candidates.length > 0
+    ) {
       const responseText = result.candidates[0].content;
       console.log("Generated Advice:", responseText);
       return responseText;
     } else {
-      throw new Error("No response received from the AI model.");
+      throw new Error("No valid response received from the AI model.");
     }
   } catch (error) {
     console.error("Error fetching financial advice:", error.message);
