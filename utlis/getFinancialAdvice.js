@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Ensure API key is loaded correctly
+// Ensure API key is loaded
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 if (!apiKey) {
   throw new Error(
@@ -9,6 +9,8 @@ if (!apiKey) {
 }
 
 const genAI = new GoogleGenerativeAI({ apiKey });
+
+// Use the correct method to initialize the model
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
@@ -21,14 +23,18 @@ const getFinancialAdvice = async (totalBudget, totalIncome, totalSpend) => {
       Provide detailed financial advice in 2 sentences to help the user manage their finances more effectively.
     `;
 
-    const result = await model.generateMessage({ prompt });
-    const responseText =
-      result?.candidates?.[0]?.content || "No response from AI.";
-    console.log(responseText);
+    // Use the appropriate method from the library
+    const result = await model.generateContent({ prompt });
 
-    return responseText;
+    if (result && result.candidates && result.candidates.length > 0) {
+      const responseText = result.candidates[0].content;
+      console.log("Generated Advice:", responseText);
+      return responseText;
+    } else {
+      throw new Error("No response received from the AI model.");
+    }
   } catch (error) {
-    console.error("Error fetching financial advice:", error);
+    console.error("Error fetching financial advice:", error.message);
     return "Sorry, I couldn't fetch the financial advice at this moment. Please try again later.";
   }
 };
